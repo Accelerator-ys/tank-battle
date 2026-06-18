@@ -1,8 +1,7 @@
 # 🎮 Tank Mini Game
 
-> AI 练手小项目 —— 纯 HTML5 Canvas 坦克大战网页游戏，用于熟悉大模型辅助开发流程。
+> AI 练手 —— 纯 HTML5 Canvas 坦克大战网页游戏，用于熟悉大模型辅助开发流程。
 > 
-> ⚠️ **定位说明**：本项目为个人练手项目，用于体验 AI 辅助编程（大模型调用、代码生成、模块拆分），**不抢重点**。核心项目请参见 [PAT-Generator](https://github.com/Accelerator-ys/PAT-Generator)。
 
 ---
 
