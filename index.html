@@ -11,6 +11,11 @@
     box-sizing: border-box;
   }
 
+  html {
+    overflow: hidden;
+    height: 100%;
+  }
+
   body {
     background: #0a0a0a;
     display: flex;
@@ -84,6 +89,13 @@
     border-radius: 4px;
     box-shadow: 0 0 30px rgba(74, 74, 106, 0.5), inset 0 0 30px rgba(0, 0, 0, 0.3);
     background: #0d0d0d;
+    outline: none;
+    cursor: crosshair;
+  }
+
+  canvas:focus {
+    border-color: #4ecdc4;
+    box-shadow: 0 0 30px rgba(78, 205, 196, 0.5), inset 0 0 30px rgba(0, 0, 0, 0.3);
   }
 
   .controls-info {
@@ -1021,12 +1033,27 @@
 
     // Draw HUD elements on canvas
     if (!gameOver) {
+      // Enemy count
       ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
       ctx.fillRect(5, 5, 180, 25);
       ctx.fillStyle = '#aaa';
       ctx.font = '12px "Courier New"';
       ctx.textAlign = 'left';
       ctx.fillText(`敌方坦克: ${enemies.filter(e => e.active).length}`, 10, 22);
+
+      // Key press indicator (debug)
+      const pressed = [];
+      if (keys['ArrowUp'] || keys['KeyW']) pressed.push('↑');
+      if (keys['ArrowDown'] || keys['KeyS']) pressed.push('↓');
+      if (keys['ArrowLeft'] || keys['KeyA']) pressed.push('←');
+      if (keys['ArrowRight'] || keys['KeyD']) pressed.push('→');
+      if (keys['Space']) pressed.push('🔫');
+      const keyStr = pressed.length > 0 ? pressed.join(' ') : '(点击画面后按方向键)';
+      const keyColor = pressed.length > 0 ? '#4ecdc4' : '#ff6b6b';
+      ctx.fillStyle = keyColor;
+      ctx.font = 'bold 14px "Courier New"';
+      ctx.textAlign = 'right';
+      ctx.fillText(keyStr, CANVAS_W - 10, CANVAS_H - 8);
     }
   }
 
@@ -1037,50 +1064,57 @@
   }
 
   // === Focus Handling ===
+  // Aggressively ensure the window has focus
+  window.focus();
   canvas.focus();
 
-  canvas.addEventListener('click', () => {
+  // Click anywhere to focus
+  document.addEventListener('click', () => {
+    window.focus();
     canvas.focus();
   });
 
-  // Prevent losing focus when clicking elsewhere on the page
-  document.addEventListener('click', (e) => {
-    if (e.target === canvas || canvas.contains(e.target)) {
-      canvas.focus();
-    }
-  });
-
   // === Input Handling ===
-  window.addEventListener('keydown', (e) => {
-    // Always focus canvas when game keys are pressed
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyP', 'KeyR'].includes(e.code)) {
-      canvas.focus();
+  // Listen on both window and document for maximum compatibility
+  function handleKeyDown(e) {
+    // Show key presses in console for debugging
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(e.code)) {
+      console.log('Key pressed:', e.code);
     }
 
     keys[e.code] = true;
 
-    // Prevent default for game keys
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
+    // Prevent default for ALL game keys to stop page scrolling
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(e.code)) {
       e.preventDefault();
+      e.stopPropagation();
     }
 
     // Pause
     if (e.code === 'KeyP' && !gameOver) {
       paused = !paused;
+      e.preventDefault();
     }
 
     // Restart
     if (e.code === 'KeyR') {
       resetGame();
-    }
-  });
-
-  window.addEventListener('keyup', (e) => {
-    keys[e.code] = false;
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
       e.preventDefault();
     }
-  });
+  }
+
+  function handleKeyUp(e) {
+    keys[e.code] = false;
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(e.code)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }
+
+  window.addEventListener('keydown', handleKeyDown, { passive: false });
+  window.addEventListener('keyup', handleKeyUp, { passive: false });
+  document.addEventListener('keydown', handleKeyDown, { passive: false });
+  document.addEventListener('keyup', handleKeyUp, { passive: false });
 
   // === Touch controls for mobile ===
   let touchActive = false;
