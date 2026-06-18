@@ -174,7 +174,7 @@
     </div>
   </div>
 
-  <canvas id="gameCanvas" width="780" height="600"></canvas>
+  <canvas id="gameCanvas" width="780" height="600" tabindex="0"></canvas>
 
   <div class="controls-info">
     <span><span class="key">↑↓←→</span> 或 <span class="key">WASD</span> 移动</span>
@@ -1036,8 +1036,27 @@
     requestAnimationFrame(gameLoop);
   }
 
+  // === Focus Handling ===
+  canvas.focus();
+
+  canvas.addEventListener('click', () => {
+    canvas.focus();
+  });
+
+  // Prevent losing focus when clicking elsewhere on the page
+  document.addEventListener('click', (e) => {
+    if (e.target === canvas || canvas.contains(e.target)) {
+      canvas.focus();
+    }
+  });
+
   // === Input Handling ===
   window.addEventListener('keydown', (e) => {
+    // Always focus canvas when game keys are pressed
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyP', 'KeyR'].includes(e.code)) {
+      canvas.focus();
+    }
+
     keys[e.code] = true;
 
     // Prevent default for game keys
