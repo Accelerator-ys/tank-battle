@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>坦克大战 - Tank Battle</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body tabindex="0">
+<div class="game-wrapper" id="gameWrapper">
+  <!-- 顶部信息栏 -->
+  <div class="game-header" id="gameHeader">
+    <div class="game-title">坦 克 大 战</div>
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-label">🏆 分数</span>
+        <span class="stat-value" id="score">0</span>
+        <span class="power-indicator" id="powerIcon" title="道具激活中"></span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">❤️ 生命</span>
+        <span class="stat-value lives-value" id="lives">3</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">📊 关卡</span>
+        <span class="stat-value level-value" id="level">1</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 游戏画布 -->
+  <div style="position:relative; width:780px; height:600px;">
+    <canvas id="gameCanvas" width="780" height="600" tabindex="0"></canvas>
+
+    <!-- 开始界面 -->
+    <div class="start-overlay active" id="startOverlay">
+      <div class="start-bg"></div>
+      <div class="start-content">
+        <div class="start-title">坦 克 大 战</div>
+        <div class="start-subtitle">T A N K · B A T T L E</div>
+        <button class="start-btn" id="startBtn">⚔ 开 始 战 斗 ⚔</button>
+        <div class="start-hint">↑↓←→ 或 WASD 移动 · 空格射击 · P 暂停</div>
+      </div>
+    </div>
+
+    <!-- 游戏结束覆盖层 -->
+    <div class="gameover-overlay" id="gameoverOverlay">
+      <div class="gameover-bg"></div>
+      <div class="gameover-content">
+        <div class="gameover-title" id="gameoverTitle">游戏结束</div>
+        <div class="gameover-stats">
+          最终分数: <span id="finalScore">0</span><br>
+          到达关卡: <span id="finalLevel">1</span><br>
+          击毁敌坦: <span id="finalKills">0</span>
+        </div>
+        <button class="restart-btn" id="restartBtn">🔄 再来一局</button>
+      </div>
+    </div>
+
+    <!-- 关卡过渡 -->
+    <div class="level-transition" id="levelTransition"></div>
+
+    <!-- 暂停覆盖层 -->
+    <div class="pause-overlay" id="pauseOverlay">
+      <div class="pause-bg"></div>
+      <div class="pause-text">⏸ 暂停中</div>
+    </div>
+  </div>
+
+  <!-- 操作提示 -->
+  <div class="controls-info">
+    <span><span class="key">↑↓←→</span> 或 <span class="key">WASD</span> 移动</span>
+    <span><span class="key">空格</span> 发射子弹</span>
+    <span><span class="key">P</span> 暂停</span>
+    <span><span class="key">R</span> 重新开始</span>
+  </div>
+</div>
+
+<!--
+  ================================================================
+   模块加载顺序（严格按依赖关系编排）
+  ================================================================
+  1. constants.js — 常量、地图、道具类型（零依赖）
+  2. audio.js     — 音效系统（零依赖，audioCtx 为模块局部变量）
+  3. utils.js     — 工具函数（零依赖）
+  4. particles.js — 粒子特效（零依赖）
+  5. powerups.js  — 道具系统（依赖 Game.* 常量）
+  6. bullet.js    — 子弹类（依赖 utils.js, particles.js）
+  7. tank.js      — 坦克类（依赖 bullet.js, utils.js, audio.js, particles.js, powerups.js）
+  8. map.js       — 地图构建（依赖 constants.js, tank.js）
+  9. input.js     — 输入处理（依赖 Game.canvas, Game.keys）
+  10. game.js     — 游戏核心（依赖所有上述模块）
+  11. main.js     — 主入口（DOM 引用、事件绑定、启动）
+  ================================================================
+-->
+<script src="js/constants.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/particles.js"></script>
+<script src="js/powerups.js"></script>
+<script src="js/bullet.js"></script>
+<script src="js/tank.js"></script>
+<script src="js/map.js"></script>
+<script src="js/input.js"></script>
+<script src="js/game.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

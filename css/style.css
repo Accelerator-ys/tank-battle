@@ -1,0 +1,391 @@
+/* ============================================================
+   坦克大战 — 全部样式
+   ============================================================ */
+
+/* ── 全局重置与基础样式 ── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  outline: none;
+  background: #0a0a0a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: 'Courier New', monospace;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── 游戏外包装 ── */
+.game-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+/* ── 顶部信息栏 ── */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 780px;
+  padding: 10px 20px;
+  background: #1a1a2e;
+  border: 2px solid #4a4a6a;
+  border-radius: 8px;
+  color: #e0e0e0;
+  transition: border-color 0.3s;
+}
+
+.game-header.power-active {
+  border-color: #ffcc00;
+  box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+}
+
+.game-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffcc00;
+  text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+  letter-spacing: 3px;
+}
+
+.stats {
+  display: flex;
+  gap: 30px;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+
+.stat-label {
+  color: #888;
+}
+
+.stat-value {
+  color: #ff6b6b;
+  font-weight: bold;
+  font-size: 20px;
+  transition: color 0.3s, transform 0.15s;
+}
+
+.stat-value.pop {
+  transform: scale(1.4);
+}
+
+.lives-value {
+  color: #4ecdc4;
+}
+
+.level-value {
+  color: #ffe66d;
+}
+
+/* 道具激活指示器 */
+.power-indicator {
+  display: none;
+  font-size: 12px;
+  color: #ffcc00;
+  margin-left: -5px;
+}
+.power-indicator.active {
+  display: inline;
+}
+
+/* ── 游戏画布 ── */
+canvas {
+  border: 3px solid #4a4a6a;
+  border-radius: 4px;
+  box-shadow: 0 0 30px rgba(74, 74, 106, 0.5), inset 0 0 30px rgba(0, 0, 0, 0.3);
+  background: #0d0d0d;
+  outline: none;
+  cursor: crosshair;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+canvas:focus {
+  border-color: #4ecdc4;
+  box-shadow: 0 0 30px rgba(78, 205, 196, 0.5), inset 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ── 操作提示栏 ── */
+.controls-info {
+  display: flex;
+  gap: 20px;
+  color: #666;
+  font-size: 13px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.key {
+  display: inline-block;
+  background: #2a2a3e;
+  border: 1px solid #4a4a6a;
+  border-radius: 4px;
+  padding: 2px 8px;
+  color: #ccc;
+  font-size: 12px;
+}
+
+/* ── 覆盖层通用样式 ── */
+.overlay {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.overlay.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── 开始界面 ── */
+.start-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 780px;
+  height: 600px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.start-overlay.active {
+  display: flex;
+  pointer-events: all;
+}
+
+.start-overlay .start-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 4px;
+}
+
+.start-overlay .start-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.start-title {
+  font-size: 52px;
+  font-weight: bold;
+  color: #ffcc00;
+  text-shadow: 0 0 30px rgba(255, 204, 0, 0.8), 0 0 60px rgba(255, 204, 0, 0.4);
+  letter-spacing: 8px;
+  margin-bottom: 15px;
+  animation: titlePulse 2s ease-in-out infinite;
+}
+
+.start-subtitle {
+  font-size: 18px;
+  color: #888;
+  margin-bottom: 40px;
+  letter-spacing: 5px;
+}
+
+.start-btn {
+  background: #4ecdc4;
+  color: #0a0a0a;
+  border: none;
+  padding: 14px 40px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  transition: all 0.3s;
+  letter-spacing: 2px;
+  pointer-events: all;
+}
+
+.start-btn:hover {
+  background: #ffcc00;
+  transform: scale(1.08);
+  box-shadow: 0 0 25px rgba(255, 204, 0, 0.6);
+}
+
+.start-hint {
+  color: #666;
+  font-size: 14px;
+  margin-top: 25px;
+  letter-spacing: 1px;
+}
+
+@keyframes titlePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* ── 游戏结束界面 ── */
+.gameover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 780px;
+  height: 600px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.gameover-overlay.active {
+  display: flex;
+}
+
+.gameover-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 4px;
+}
+
+.gameover-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.gameover-title {
+  font-size: 44px;
+  font-weight: bold;
+  color: #ff6b6b;
+  text-shadow: 0 0 25px rgba(255, 107, 107, 0.6);
+  margin-bottom: 20px;
+  letter-spacing: 5px;
+}
+
+.gameover-stats {
+  font-size: 18px;
+  color: #e0e0e0;
+  margin-bottom: 30px;
+  line-height: 2;
+}
+
+.gameover-stats span {
+  color: #ffcc00;
+  font-weight: bold;
+}
+
+.restart-btn {
+  background: #4ecdc4;
+  color: #0a0a0a;
+  border: none;
+  padding: 14px 35px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  transition: all 0.3s;
+  letter-spacing: 2px;
+}
+
+.restart-btn:hover {
+  background: #ffcc00;
+  transform: scale(1.08);
+  box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+}
+
+/* ── 关卡过渡界面 ── */
+.level-transition {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 48px;
+  font-weight: bold;
+  color: #ffcc00;
+  text-shadow: 0 0 30px rgba(255, 204, 0, 0.8);
+  z-index: 10;
+  pointer-events: none;
+  letter-spacing: 5px;
+  transition: none;
+}
+
+.level-transition.show {
+  animation: levelBounce 1.2s ease-out forwards;
+}
+
+@keyframes levelBounce {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+  20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  40% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+}
+
+/* ── 暂停界面 ── */
+.pause-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 780px;
+  height: 600px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9;
+  pointer-events: none;
+}
+
+.pause-overlay.active {
+  display: flex;
+}
+
+.pause-overlay .pause-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+}
+
+.pause-text {
+  position: relative;
+  z-index: 1;
+  font-size: 36px;
+  font-weight: bold;
+  color: #ffcc00;
+  text-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+  letter-spacing: 3px;
+}
